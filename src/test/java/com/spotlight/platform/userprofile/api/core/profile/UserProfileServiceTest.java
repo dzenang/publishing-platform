@@ -2,6 +2,7 @@ package com.spotlight.platform.userprofile.api.core.profile;
 
 import com.spotlight.platform.userprofile.api.core.exceptions.EntityNotFoundException;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
+import com.spotlight.platform.userprofile.api.core.profile.update.ReplacePropertyValue;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixtures;
 
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.when;
 
 class UserProfileServiceTest {
     private final UserProfileDao userProfileDaoMock = mock(UserProfileDao.class);
-    private final UserProfileService userProfileService = new UserProfileService(userProfileDaoMock);
+    private final ReplacePropertyValue updaterMock = mock(ReplacePropertyValue.class);
+    private final UserProfileService userProfileService = new UserProfileService(userProfileDaoMock, updaterMock);
 
     @Nested
     @DisplayName("get")

@@ -5,6 +5,8 @@ import com.google.inject.AbstractModule;
 import com.spotlight.platform.userprofile.api.core.profile.UserProfileService;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDaoInMemory;
+import com.spotlight.platform.userprofile.api.core.profile.update.ReplacePropertyValue;
+import com.spotlight.platform.userprofile.api.core.profile.update.Updateable;
 
 import javax.inject.Singleton;
 
@@ -13,5 +15,6 @@ public class ProfileModule extends AbstractModule {
     protected void configure() {
         bind(UserProfileDao.class).to(UserProfileDaoInMemory.class).in(Singleton.class);
         bind(UserProfileService.class).in(Singleton.class);
+        bind(Updateable.class).to(ReplacePropertyValue.class).in(Singleton.class);
     }
 }
