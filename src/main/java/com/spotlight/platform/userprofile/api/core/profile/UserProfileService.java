@@ -29,7 +29,7 @@ public class UserProfileService {
         // todo handle different userIds in path and body
         setUpdaterInstance(userProfileDTO.type());
         Updateable updater = setUpdaterInstance(userProfileDTO.type());
-        updater.updateOrCreate(userProfileDTO);
+        updater.process(userProfileDTO);
 
         return userProfileDao.get(userId).get();
     }

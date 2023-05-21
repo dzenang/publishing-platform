@@ -2,6 +2,7 @@ package com.spotlight.platform.userprofile.api.model.profile.primitives;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.spotlight.platform.userprofile.api.core.exceptions.BadRequestException;
 
 public class UserProfilePropertyValue {
 
@@ -32,6 +33,14 @@ public class UserProfilePropertyValue {
             return false;
         }
         return value.equals(((UserProfilePropertyValue) obj).getValue());
+    }
+
+    public UserProfilePropertyValue increment(UserProfilePropertyValue value) {
+        try {
+            return valueOf(((Integer) this.value) + ((Integer) value.getValue())); // for simplicity, we just cast to integer here
+        } catch (ClassCastException e) {
+            throw new BadRequestException("Incompatible types for increment: " + e.getMessage());
+        }
     }
 }
 
