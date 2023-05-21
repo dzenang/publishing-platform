@@ -6,16 +6,13 @@ import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 
 import javax.inject.Inject;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.function.Consumer;
 
-public class ReplacePropertyValue implements Updateable {
-
-    private final UserProfileDao userProfileDao;
+public class CollectHandler extends AbstractUserProfileHandler {
 
     @Inject
-    public ReplacePropertyValue(UserProfileDao userProfileDao) {
-        this.userProfileDao = userProfileDao;
+    protected CollectHandler(UserProfileDao userProfileDao) {
+        super(userProfileDao);
     }
 
     @Override
@@ -26,15 +23,15 @@ public class ReplacePropertyValue implements Updateable {
         );
     }
 
-    private Runnable createUserProfile(UserProfileDTO userProfileDTO) {
-        return () -> userProfileDao.put(new UserProfile(userProfileDTO.userId(), Instant.now(), userProfileDTO.properties()));
-    }
-
     private Consumer<UserProfile> updateUserProfile(UserProfileDTO userProfileDTO) {
         return userProfile -> {
             var existingProperties = userProfile.userProfileProperties();
-            existingProperties.putAll(userProfileDTO.properties());
-            userProfileDao.put(new UserProfile(userProfileDTO.userId(), Instant.now(), existingProperties));
+            userProfileDTO.properties().forEach(
+                    (k, v) -> existingProperties.compute(k, (k1, v1) -> v1 != null ? v1.collect(v) : v)
+            );
+
+            userProfileDao.put(new UserProfile(userProfile.userId(), Instant.now(), existingProperties));
+            // would be good if we would create UserProfile instance inside UserProfileDao put method, so we take care of that in one place
         };
     }
 }

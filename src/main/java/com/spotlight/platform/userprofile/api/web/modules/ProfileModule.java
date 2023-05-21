@@ -6,9 +6,10 @@ import com.google.inject.multibindings.MapBinder;
 import com.spotlight.platform.userprofile.api.core.profile.UserProfileService;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDaoInMemory;
-import com.spotlight.platform.userprofile.api.core.profile.update.IncrementPropertyValue;
-import com.spotlight.platform.userprofile.api.core.profile.update.ReplacePropertyValue;
-import com.spotlight.platform.userprofile.api.core.profile.update.Updateable;
+import com.spotlight.platform.userprofile.api.core.profile.update.CollectHandler;
+import com.spotlight.platform.userprofile.api.core.profile.update.IncrementHandler;
+import com.spotlight.platform.userprofile.api.core.profile.update.ReplaceHandler;
+import com.spotlight.platform.userprofile.api.core.profile.update.UserProfileHandler;
 import com.spotlight.platform.userprofile.api.dto.CommandType;
 
 import javax.inject.Singleton;
@@ -19,9 +20,10 @@ public class ProfileModule extends AbstractModule {
         bind(UserProfileDao.class).to(UserProfileDaoInMemory.class).in(Singleton.class);
         bind(UserProfileService.class).in(Singleton.class);
 
-        MapBinder<CommandType, Updateable> mapBinder = MapBinder.newMapBinder(binder(), CommandType.class, Updateable.class);
-        mapBinder.addBinding(CommandType.REPLACE).to(ReplacePropertyValue.class);
-        mapBinder.addBinding(CommandType.INCREMENT).to(IncrementPropertyValue.class);
-        // add other command's bindings
+        MapBinder<CommandType, UserProfileHandler> mapBinder = MapBinder.newMapBinder(binder(), CommandType.class, UserProfileHandler.class);
+        mapBinder.addBinding(CommandType.REPLACE).to(ReplaceHandler.class);
+        mapBinder.addBinding(CommandType.INCREMENT).to(IncrementHandler.class);
+        mapBinder.addBinding(CommandType.COLLECT).to(CollectHandler.class);
+        // add other command's bindings here
     }
 }

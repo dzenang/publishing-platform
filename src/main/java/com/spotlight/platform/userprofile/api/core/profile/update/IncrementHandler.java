@@ -1,6 +1,5 @@
 package com.spotlight.platform.userprofile.api.core.profile.update;
 
-import com.spotlight.platform.userprofile.api.core.exceptions.BadRequestException;
 import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfileDao;
 import com.spotlight.platform.userprofile.api.dto.UserProfileDTO;
 import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
@@ -9,13 +8,11 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.function.Consumer;
 
-public class IncrementPropertyValue implements Updateable {
-
-    private final UserProfileDao userProfileDao;
+public class IncrementHandler extends AbstractUserProfileHandler {
 
     @Inject
-    public IncrementPropertyValue(UserProfileDao userProfileDao) {
-        this.userProfileDao = userProfileDao;
+    protected IncrementHandler(UserProfileDao userProfileDao) {
+        super(userProfileDao);
     }
 
     @Override
@@ -26,11 +23,6 @@ public class IncrementPropertyValue implements Updateable {
         );
     }
 
-    private Runnable createUserProfile(UserProfileDTO userProfileDTO) {
-        return () -> userProfileDao.put(new UserProfile(userProfileDTO.userId(), Instant.now(), userProfileDTO.properties()));
-        // would be good if we would create UserProfile instance inside UserProfileDao put method, so we take care of that in one place
-    }
-
     private Consumer<UserProfile> updateUserProfile(UserProfileDTO userProfileDTO) {
         return userProfile -> {
             var existingProperties = userProfile.userProfileProperties();
@@ -39,6 +31,7 @@ public class IncrementPropertyValue implements Updateable {
             );
 
             userProfileDao.put(new UserProfile(userProfile.userId(), Instant.now(), existingProperties));
+            // would be good if we would create UserProfile instance inside UserProfileDao put method, so we take care of that in one place
         };
     }
 }
