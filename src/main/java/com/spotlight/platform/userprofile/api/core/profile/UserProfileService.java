@@ -13,15 +13,12 @@ import java.util.Map;
 
 public class UserProfileService {
     private final UserProfileDao userProfileDao;
-    private Updateable updater;
+    private final Map<CommandType, Updateable> updateableMap;
 
     @Inject
-    Map<CommandType, Updateable> updateableMap;
-
-    @Inject
-    public UserProfileService(UserProfileDao userProfileDao, Updateable updater) {
+    public UserProfileService(UserProfileDao userProfileDao, Map<CommandType, Updateable> updateableMap) {
         this.userProfileDao = userProfileDao;
-        this.updater = updater;
+        this.updateableMap = updateableMap;
     }
 
     public UserProfile get(UserId userId) {
@@ -31,12 +28,13 @@ public class UserProfileService {
     public UserProfile update(UserId userId, UserProfileDTO userProfileDTO) {
         // todo handle different userIds in path and body
         setUpdaterInstance(userProfileDTO.type());
+        Updateable updater = setUpdaterInstance(userProfileDTO.type());
         updater.updateOrCreate(userProfileDTO);
 
         return userProfileDao.get(userId).get();
     }
 
-    private void setUpdaterInstance(CommandType commandType) {
-        updater = updateableMap.get(commandType);
+    private Updateable setUpdaterInstance(CommandType commandType) {
+        return updateableMap.get(commandType);
     }
 }
