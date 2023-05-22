@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.spotlight.platform.userprofile.api.core.exceptions.BadRequestException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfilePropertyValue {
@@ -55,8 +56,9 @@ public class UserProfilePropertyValue {
     @SuppressWarnings("unchecked")
     public UserProfilePropertyValue collect(UserProfilePropertyValue value) {
         try {
-            ((List) this.value).addAll((List) value.getValue());
-            return valueOf(this.value);
+            List<Object> newList = new ArrayList<Object>((List)this.value);
+            newList.addAll((List) value.getValue());
+            return valueOf(newList);
         } catch (ClassCastException e) {
             throw new BadRequestException("Incompatible types for collect: " + e.getMessage());
         }
