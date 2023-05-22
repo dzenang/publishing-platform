@@ -24,11 +24,17 @@ public class UserProfileFixtures {
     public static final String SERIALIZED_USER_PROFILE = FixtureHelpers.fixture("/fixtures/model/profile/userProfile.json");
 
     public static final UserProfileDTO USER_PROFILE_DTO_REPLACE = new UserProfileDTO(USER_ID, CommandType.REPLACE,
-            Map.of(UserProfilePropertyName.valueOf("property1dto"), UserProfilePropertyValue.valueOf("property1dtoValue")));
+            Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf("property1DtoValue")));
+
+    public static final String SERIALIZED_USER_PROFILE_DTO_REPLACE = FixtureHelpers.fixture("/fixtures/dto/userProfileDTOReplace.json");
 
     public static final UserProfileDTO USER_PROFILE_DTO_INCREMENT = new UserProfileDTO(USER_ID, CommandType.INCREMENT,
-            Map.of(UserProfilePropertyName.valueOf("property1dto"), UserProfilePropertyValue.valueOf(1)));
+            Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf(1)));
+
+    public static final String SERIALIZED_USER_PROFILE_DTO_INCREMENT = FixtureHelpers.fixture("/fixtures/dto/userProfileDTOIncrement.json");
 
     public static final UserProfileDTO USER_PROFILE_DTO_COLLECT = new UserProfileDTO(USER_ID, CommandType.COLLECT,
-            Map.of(UserProfilePropertyName.valueOf("property1dto"), UserProfilePropertyValue.valueOf(Arrays.asList(1, 2))));
+            Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf(Arrays.asList(1, 2))));
+
+    public static final String SERIALIZED_USER_PROFILE_DTO_COLLECT = FixtureHelpers.fixture("/fixtures/dto/userProfileDTOCollect.json");
 }

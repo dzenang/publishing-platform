@@ -1,0 +1,7 @@
+{
+  "userId": "existing-user-id",
+  "type": "increment",
+  "properties": {
+    "property1Dto": 1
+  }
+}

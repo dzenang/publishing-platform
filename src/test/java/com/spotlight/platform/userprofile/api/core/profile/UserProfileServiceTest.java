@@ -6,7 +6,6 @@ import com.spotlight.platform.userprofile.api.core.profile.update.UserProfileHan
 import com.spotlight.platform.userprofile.api.dto.CommandType;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixtures;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,8 @@ import static org.mockito.Mockito.when;
 
 class UserProfileServiceTest {
     private final UserProfileDao userProfileDaoMock = mock(UserProfileDao.class);
-    private final Map<CommandType, UserProfileHandler> updateableMapMock = new HashMap<>();
-    private final UserProfileService userProfileService = new UserProfileService(userProfileDaoMock, updateableMapMock);
+    private final Map<CommandType, UserProfileHandler> updatableMap = new HashMap<>();
+    private final UserProfileService userProfileService = new UserProfileService(userProfileDaoMock, updatableMap);
 
     @Nested
     @DisplayName("get")

@@ -1,0 +1,7 @@
+{
+  "userId": "existing-user-id",
+  "type": "collect",
+  "properties": {
+    "property1Dto": [1, 2]
+  }
+}
