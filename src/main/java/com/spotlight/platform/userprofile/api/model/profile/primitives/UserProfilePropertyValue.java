@@ -16,7 +16,6 @@ public class UserProfilePropertyValue {
     }
 
     public static UserProfilePropertyValue valueOf(Object value) {
-        System.out.println("valueOf value: " + value);
         return new UserProfilePropertyValue(value);
     }
 
@@ -38,6 +37,13 @@ public class UserProfilePropertyValue {
         return value.equals(((UserProfilePropertyValue) obj).getValue());
     }
 
+    @Override
+    public String toString() {
+        return "UserProfilePropertyValue{" +
+                "value=" + value +
+                '}';
+    }
+
     public UserProfilePropertyValue increment(UserProfilePropertyValue value) {
         try {
             return valueOf(((Integer) this.value) + ((Integer) value.getValue())); // for simplicity, we just cast to integer here
@@ -48,8 +54,6 @@ public class UserProfilePropertyValue {
 
     @SuppressWarnings("unchecked")
     public UserProfilePropertyValue collect(UserProfilePropertyValue value) {
-        System.out.println("this.value: " + this.value);
-        System.out.println("value.getValue(): " + value.getValue());
         try {
             ((List) this.value).addAll((List) value.getValue());
             return valueOf(this.value);

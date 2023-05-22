@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/users/{userId}")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,5 +39,11 @@ public class UserResource {
     @PUT
     public UserProfile updateUserProfile(@Valid @PathParam("userId") UserId userId, @NotNull @Valid UserProfileDTO userProfileDTO) {
         return userProfileService.update(userId, userProfileDTO);
+    }
+
+    @Path("profile/batch-update")
+    @PUT
+    public UserProfile updateUserProfile(@Valid @PathParam("userId") UserId userId, @Valid List<UserProfileDTO> userProfileDTOList) {
+        return userProfileService.batchUpdate(userId, userProfileDTOList);
     }
 }
