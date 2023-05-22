@@ -6,6 +6,7 @@ import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 
 import javax.inject.Inject;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class CollectHandler extends AbstractUserProfileHandler {
@@ -25,7 +26,7 @@ public class CollectHandler extends AbstractUserProfileHandler {
 
     private Consumer<UserProfile> updateUserProfile(UserProfileDTO userProfileDTO) {
         return userProfile -> {
-            var existingProperties = userProfile.userProfileProperties();
+            var existingProperties = new HashMap<>(userProfile.userProfileProperties());
             userProfileDTO.properties().forEach(
                     (k, v) -> existingProperties.compute(k, (k1, v1) -> v1 != null ? v1.collect(v) : v)
             );

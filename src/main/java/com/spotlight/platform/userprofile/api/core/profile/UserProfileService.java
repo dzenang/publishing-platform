@@ -33,7 +33,6 @@ public class UserProfileService {
 
     public UserProfile update(UserId userId, UserProfileDTO userProfileDTO) {
         // todo handle different userIds in path and body
-        getUpdaterInstance(userProfileDTO.type());
         UserProfileHandler updater = getUpdaterInstance(userProfileDTO.type());
         updater.process(userProfileDTO);
 
