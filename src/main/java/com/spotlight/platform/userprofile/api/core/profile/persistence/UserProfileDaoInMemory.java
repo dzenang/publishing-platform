@@ -19,4 +19,8 @@ public class UserProfileDaoInMemory implements UserProfileDao {
     public void put(UserProfile userProfile) {
         storage.put(userProfile.userId(), userProfile);
     }
+
+    public void clear() {
+        storage.clear();
+    }
 }
