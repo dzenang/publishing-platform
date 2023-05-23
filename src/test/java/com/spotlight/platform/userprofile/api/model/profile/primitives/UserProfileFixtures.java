@@ -32,6 +32,9 @@ public class UserProfileFixtures {
     public static final UserProfileDTO USER_PROFILE_DTO_INCREMENT = new UserProfileDTO(USER_ID, CommandType.INCREMENT,
             Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf(1)));
 
+    public static final UserProfileDTO USER_PROFILE_DTO_INCREMENT_INCORRECT = new UserProfileDTO(USER_ID, CommandType.INCREMENT,
+            Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf("1")));
+
     public static final UserProfileDTO USER_PROFILE_DTO_INCREMENT_UPDATED = new UserProfileDTO(USER_ID, CommandType.INCREMENT,
             Map.of(UserProfilePropertyName.valueOf("property1Dto"), UserProfilePropertyValue.valueOf(2)));
 

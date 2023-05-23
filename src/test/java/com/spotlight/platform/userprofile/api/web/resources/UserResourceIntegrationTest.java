@@ -8,6 +8,7 @@ import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfi
 import com.spotlight.platform.userprofile.api.web.UserProfileApiApplication;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Nested;
@@ -22,6 +23,8 @@ import ru.vyarus.dropwizard.guice.test.ClientSupport;
 import ru.vyarus.dropwizard.guice.test.jupiter.ext.TestDropwizardAppExtension;
 
 import javax.ws.rs.client.Entity;
+
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -206,5 +209,76 @@ class UserResourceIntegrationTest {
         }
     }
 
-    //todo add tests for /batch-update
+    @Nested
+    @DisplayName("updateUserProfileBatch")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class UpdateUserProfileBatch {
+        private static final String USER_ID_PATH_PARAM = "userId";
+        private static final String URL = "/users/{%s}/profile/batch-update".formatted(USER_ID_PATH_PARAM);
+
+        @BeforeEach
+        public void setUp(UserProfileDao userProfileDao) {
+            ((UserProfileDaoInMemory) userProfileDao).clear();
+        }
+
+        @Test
+        void updateWithBatch_replaceCommand(ClientSupport client, UserProfileDao userProfileDao) {
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isNotPresent();
+
+            List<UserProfileDTO> userProfileDTOList = List.of(UserProfileFixtures.USER_PROFILE_DTO_REPLACE,
+                    UserProfileFixtures.USER_PROFILE_DTO_REPLACE_UPDATED);
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID)
+                    .request().put(Entity.json(userProfileDTOList));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isPresent();
+            assertThatJson(response.readEntity(UserProfile.class).userProfileProperties())
+                    .isEqualTo(UserProfileFixtures.USER_PROFILE_DTO_REPLACE_UPDATED.properties());
+        }
+
+        @Test
+        void updateWithBatch_incrementCommand(ClientSupport client, UserProfileDao userProfileDao) {
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isNotPresent();
+
+            List<UserProfileDTO> userProfileDTOList = List.of(UserProfileFixtures.USER_PROFILE_DTO_INCREMENT,
+                    UserProfileFixtures.USER_PROFILE_DTO_INCREMENT);
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID)
+                    .request().put(Entity.json(userProfileDTOList));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isPresent();
+            assertThatJson(response.readEntity(UserProfile.class).userProfileProperties())
+                    .isEqualTo(UserProfileFixtures.USER_PROFILE_DTO_INCREMENT_UPDATED.properties());
+        }
+
+        @Test
+        void updateWithBatch_incrementCommandWithExceptionThrown(ClientSupport client, UserProfileDao userProfileDao) {
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isNotPresent();
+
+            List<UserProfileDTO> userProfileDTOList = List.of(UserProfileFixtures.USER_PROFILE_DTO_INCREMENT,
+                    UserProfileFixtures.USER_PROFILE_DTO_INCREMENT, UserProfileFixtures.USER_PROFILE_DTO_INCREMENT_INCORRECT);
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID)
+                    .request().put(Entity.json(userProfileDTOList));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST_400);
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isPresent();
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID).get().userProfileProperties())
+                    .isEqualTo(UserProfileFixtures.USER_PROFILE_DTO_INCREMENT_UPDATED.properties());
+        }
+
+        @Test
+        void updateWithBatch_collectCommand(ClientSupport client, UserProfileDao userProfileDao) {
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isNotPresent();
+
+            List<UserProfileDTO> userProfileDTOList = List.of(UserProfileFixtures.USER_PROFILE_DTO_COLLECT,
+                    UserProfileFixtures.USER_PROFILE_DTO_COLLECT);
+            var response = client.targetRest().path(URL).resolveTemplate(USER_ID_PATH_PARAM, UserProfileFixtures.USER_ID)
+                    .request().put(Entity.json(userProfileDTOList));
+
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+            assertThat(userProfileDao.get(UserProfileFixtures.USER_ID)).isPresent();
+            assertThatJson(response.readEntity(UserProfile.class).userProfileProperties())
+                    .isEqualTo(UserProfileFixtures.USER_PROFILE_DTO_COLLECT_UPDATED.properties());
+        }
+    }
 }
